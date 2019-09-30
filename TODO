@@ -1,0 +1,7 @@
+# 24/07
+
+A faire:
+- Use a reader factory (see PHPExcel::IOFactory => load with CreateREaderForFile and then read) and hide the plugin factory
+- Modéliser les fichiers attachés et l'output (voir TODO)
+- Modéliser l'output pour les quiz/questions voir imsqtiasiv1p2 - https://www.imsglobal.org/question/qtiv1p2/imsqti_asi_bindv1p2.html
+- Modéliser l'input pour les quiz -

@@ -1,0 +1,5 @@
+-e git+https://github.com/jdum/odfdo.git#3.0.1#egg=odfdo
+-e git+https://github.com/call-learning/pyslet.git#egg=pyslet
+straight.plugin
+toml
+
