@@ -20,7 +20,7 @@ class TestModelImport(unittest.TestCase):
         with open('./data/cours2/plandecours.odp', 'rb') as f:
             course.load(f, 'odpcourse')
         self.assertEqual("Mon cours 1", course.title)
-        self.assertEqual("Description Courte du cours….  Autre description détaillée du cours",
+        self.assertEqual("Description courte du cours….\nAutre description détaillée",
                          course.description.rstrip("\n").rstrip())
-        self.assertEqual("Section 1 / Titre 1", course[0].title)
-        self.assertEqual("Section 2 / Titre 2", course[1].title)
+        self.assertEqual("Section 1 /Titre 1", course[0].title)
+        self.assertEqual("Section 2/ Titre 2", course[1].title)

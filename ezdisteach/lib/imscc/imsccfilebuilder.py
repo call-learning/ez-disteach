@@ -9,7 +9,7 @@ from abc import abstractmethod, ABC
 from lxml import etree
 from lxml.etree import ElementBase
 
-from .lxmlelements import IMSBasicText, IMSItem, IMSRessourceFile
+from .xmlelements import IMSBasicText, IMSItem, IMSRessourceFile
 import io
 class ModelFileOutputBuilder:
     def __init__(self, item, ioopen = io.open):
