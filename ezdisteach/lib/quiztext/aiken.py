@@ -19,7 +19,7 @@ aiken_grammar = '''
     
     quiz: NEWLINE? questions NEWLINE?
     
-    questions: question 
+    ?questions: question 
             | questions SINGLENEWLINE question
     
     question: intro choices rightanswers
@@ -31,25 +31,28 @@ aiken_grammar = '''
     
     ?choice: ANSWERNUMBER WS_INLINE SENTENCE
     
-    rightanswers: ANSWERKW  WS_INLINE answerlist SINGLENEWLINE
+    rightanswers: ANSWERKW  WS_INLINE answerslist SINGLENEWLINE
     
-    answerlist: singleanswer 
-        | answerlist "," singleanswer
+    answerslist: singleanswer 
+        | answerslist "," singleanswer
     
-    ?singleanswer: WS_INLINE? UCASE_LETTER WS_INLINE? 
+    singleanswer: WS_INLINE? UCASE_LETTER WS_INLINE? 
 '''
 
 
 class AikenTreeTransformer(Transformer):
-    def answerlist(self):
-        return self if type(self[0]) is tuple else list(chain.from_iterable([self[0], [self[1]]]))
+    def answerslist(self):
+        return self[0] if len(self) == 1 else self
+
+    def singleanswer(self):
+        return self[0].value
 
     def intro(self):
-        return self[0].value
+        return self[0].value.strip("\n")
 
     def choice(self):
         answer = self[0].value[:-1]
-        value = self[1].value if self[1].type == 'SENTENCE' else self[2].value
+        value = self[1].value.strip("\n") if self[1].type == 'SENTENCE' else self[2].value.strip("\n")
         return (answer, value)
 
     def choices(self):
@@ -61,6 +64,12 @@ class AikenTreeTransformer(Transformer):
     def question(self):
         question = AikenQuestion(self[0], self[1], self[2])
         return question
+
+    def questions(self):
+        return [q for q in self if type(q) is AikenQuestion]
+
+    def quiz(self):
+        return self[0] if type(self[0]) is list else self[1]
 
 
 akien_parser = Lark(aiken_grammar, parser='lalr', start='quiz', debug=True, transformer=AikenTreeTransformer)
@@ -80,3 +89,9 @@ class AikenQuestion:
         self.intro = intro
         self.choices = dict(choices)
         self.rightanswers = rightanswers
+
+    def __repr__(self):
+        text = self.intro + "\n"
+        text = text + "\n".join([k + ". " + v for k, v in self.choices.items()]) + "\n"
+        text = text + "ANSWER: " + ",".join(self.rightanswers) + "\n"
+        return text

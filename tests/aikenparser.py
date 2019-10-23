@@ -5,13 +5,12 @@ from ezdisteach.lib.quiztext.aiken import parse_aiken_quiz
 
 class TestAikenParser(unittest.TestCase):
 
-
     def test_parse_simple_quiz(self):
         result =  parse_aiken_quiz(SIMPLE_AIKEN)
-        self.assertIsNone(result)
+        resulttext = "\n".join([repr(r) for r in result])
+        self.assertEqual(SIMPLE_AIKEN.replace(')','.'), resulttext)
 
-SIMPLE_AIKEN = """
-What is the correct answer to this question?
+SIMPLE_AIKEN = """What is the correct answer to this question?
 A. Is it this one?
 B. Maybe this answer?
 C. Possibly this one?
