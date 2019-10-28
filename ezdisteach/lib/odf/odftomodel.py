@@ -8,7 +8,7 @@ from odfdo import Document, Frame, DrawPage, Element
 from ezdisteach.lib.naturalspecs.itemparser import get_item_from_instruction
 from ezdisteach.model import create_model, ImportationError
 import aiken
-
+from ezdisteach.lib.quiztext.aiken import parse_aiken_quiz
 
 class BaseModelBuilder(ABC):
     def __init__(self, fulldocument: Document, currentmodel):
@@ -174,6 +174,7 @@ class AssessmentModelBuilder(BaseModelBuilder):
             if quizformat == "aiken":
                 # This library will have to be implemented !!!
                 # questions = aiken.load(quizcontent)
+                result = parse_aiken_quiz(SIMPLE_AIKEN)
                 qs = ['Is it this one?', 'Maybe this answer?','Possibily this one ?', 'Must be this one!']
                 chx = [3] # 4th choice
                 item = create_model('MultipleChoice', title='Title of the question',questions=qs, rightchoices=chx )
