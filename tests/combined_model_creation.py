@@ -48,7 +48,9 @@ class TestCombinedModelCreation(unittest.TestCase):
         question1 = create_model('MultipleChoice',
                                  title='Multiple choice 1',
                                  description='Multiple choice description',
-                                 choices=['Choice 1', 'Choice 2', 'Choice 3']
+                                 intro='Select is the best LMS?',
+                                 choices=dict([('A', 'Moodle'), ('B', 'edX'), ('C', 'Other')]),
+                                 rightanswers=['A', 'B']
                                  )
         assessment = create_model('Assessment',
                                   title='Assessment',

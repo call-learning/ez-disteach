@@ -122,7 +122,7 @@ def get_item_from_instruction(instruction, lang="fr"):
         # TODO: rework this
         if newtype == 'Video' or newtype == 'Link':
             argsvalue['url'] = buildargs[ARG_ROOT_NAME + '1']
-        return [newtype, argsvalue]
+        return (newtype, argsvalue)
     raise UnsupportedItem('Cannot parse the instruction:%s' % instruction)
 
 class UnsupportedItem(Exception):

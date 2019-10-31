@@ -26,8 +26,7 @@ def import_stream(model, in_stream, **kwargs):
     with  tempfile.NamedTemporaryFile() as f:
         f.write(in_stream.read())
         document = Document(f)
-        builder = build_model(document, model)
-        builder.build()
+        build_model(document, model)
 
 
 def import_meta(model, in_stream, **kwargs):

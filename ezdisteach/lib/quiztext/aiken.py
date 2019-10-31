@@ -4,7 +4,7 @@ from itertools import chain
 
 from lark import Lark, Transformer
 
-aiken_grammar = '''
+aiken_grammar = r'''
     %import common.NEWLINE
     %import common.CR
     %import common.LF

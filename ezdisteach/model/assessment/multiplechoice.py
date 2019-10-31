@@ -5,5 +5,5 @@ from ..base import Base
 
 
 class MultipleChoice(Base):
-    MANDATORY_ATTRIBUTES = []
-    META_ATTRIBUTES = ['title', 'description', 'rightchoices', 'questions']
+    MANDATORY_ATTRIBUTES = ['intro', 'choices', 'rightanswers']
+    META_ATTRIBUTES = ['title', 'description', 'intro', 'choices', 'rightanswers']

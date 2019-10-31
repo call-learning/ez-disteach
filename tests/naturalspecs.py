@@ -68,8 +68,8 @@ RESULTS_VIDEO = [
 ]
 
 RESULTS_ITEMS_VIDEO = [
-    ['Video', {'title': "Vidéo d'exemple",'url': 'https://www.youtube.com/watch?v=aqz-KE-bpKQhttps://www.youtube.com/watch?v=aqz-KE-bpKQ'}],
-    ['Video', {'title': "Vidéo interne", 'url':'VIDEO-1.1.mp4'}],
+    ('Video', {'title': "Vidéo d'exemple",'url': 'https://www.youtube.com/watch?v=aqz-KE-bpKQhttps://www.youtube.com/watch?v=aqz-KE-bpKQ'}),
+    ('Video', {'title': "Vidéo interne", 'url':'VIDEO-1.1.mp4'}),
 ]
 
 INSTRUCTIONS_QUIZ = [

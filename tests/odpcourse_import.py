@@ -3,7 +3,8 @@ import unittest
 
 from odfdo import Document
 
-from ezdisteach.lib.odf.odftomodel import build_model, normalize_note_section, parse_note_slide_toml
+from ezdisteach.lib.odf import build_model
+from ezdisteach.lib.odf.tools import normalize_note_section, parse_note_slide_toml
 from ezdisteach.model import create_model
 
 
@@ -21,7 +22,7 @@ class TestODPCourseImport(unittest.TestCase):
 
     def test_config_note_parse(self):
         result = parse_note_slide_toml(TEXT_NOTE_QUIZ_SLIDE_TEST_PARSE)
-        self.assertEquals(
+        self.assertEqual(
             ({'quiz': {'quiz1': {'type': 'aiken', 'name': 'Quiz 1'}, 'quiz2': {'type': 'gift', 'name': 'Quiz 2'}}},
              [
                 '\nWhat is the correct answer to this question?\nA. Is it this one?\nB. Maybe this answer?\nC. Possibly this one?\nD. Must be this one!\nANSWER: D',
@@ -32,8 +33,7 @@ class TestODPCourseImport(unittest.TestCase):
     def test_course_simple_odf_import(self):
         course = create_model('Course')
         # First presentation
-        builder = build_model(TestODPCourseImport._documents[0], course)
-        builder.build()
+        build_model(TestODPCourseImport._documents[0], course)
         self.assertEqual("Mon cours 1", course.title)
         self.assertEqual("Description Courte du cours….  Autre description détaillée du cours",
                          course.description.rstrip("\n").rstrip())
@@ -41,8 +41,7 @@ class TestODPCourseImport(unittest.TestCase):
     def test_course_ressource_odf_import(self):
         course = create_model('Course')
         # Second presentation
-        builder = build_model(TestODPCourseImport._documents[1], course)
-        builder.build()
+        build_model(TestODPCourseImport._documents[1], course)
         self.assertEqual("Mon cours 1", course.title)
         self.assertEqual("Section 1 /Titre 1", course[0].title)
         self.assertEqual("Section 2/ Titre 2", course[1].title)
@@ -60,9 +59,7 @@ class TestODPCourseImport(unittest.TestCase):
         section = create_model('Section')
         course.append(section)
         # Second presentation
-        builder = build_model(TestODPCourseImport._documents[1], section)
-        # This should fail for now as we don't have a way of knowing where to start in the document
-        builder.build()
+        build_model(TestODPCourseImport._documents[1], section)
         self.assertEqual("Section 1 / Titre 1", course[0].title)
         self.assertEqual("Section 2 / Titre 2", course[1].title)
 
