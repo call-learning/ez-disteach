@@ -4,13 +4,13 @@
 """
 from xml.etree.ElementTree import Element, SubElement
 
-from .tools import get_ressource_path
+from .tools import get_ressource_path, get_model_identifier
 
 
 class IMSRessourceFile(Element):
     def __init__(self, model, type):
         super().__init__('resource')
-        self.identifier = ('I_%s' % model.uid).upper()
+        self.identifier = get_model_identifier(model)
         self.type = type
         href = get_ressource_path(model)
         SubElement(self, 'file', {'href': href})
@@ -28,7 +28,7 @@ class IMSBasicText(Element):
 class IMSItem(Element):
     def __init__(self, model, identifierref=None):
         super().__init__('item')
-        self.identifier = ('I_%s' % model.uid).upper()
+        self.identifier = get_model_identifier(model)
         if identifierref: self.identifierref = identifierref
         title = IMSBasicText('title', model.title)
         self.append(title)

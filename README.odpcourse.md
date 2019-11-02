@@ -99,7 +99,7 @@ type = "gift"
 ::Q2:: Quelle couleur se trouve entre l'orange et le vert dans le spectre ? 
 {=jaune #Bonne réponse; bravo ! ~rouge #Mauvaise réponse, c'est jaune. ~bleu #Mauvaise réponse, c'est jaune.}
 
-// Texte troué
+// Texte à trous
 ::Q3:: Deux plus {=deux =2} égalent quatre.
 
 

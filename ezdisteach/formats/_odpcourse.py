@@ -13,11 +13,7 @@ extensions = ('odp',)
 
 
 def export_stream(model, **kwargs):
-    stream = BufferedWriter()
-    zipfile = zipfile.zipfile(stream)
-
-    stream.seek(0)
-    return stream
+    pass
 
 def import_stream(model, in_stream, **kwargs):
     from ezdisteach.lib.odf.odftomodel import build_model
@@ -31,10 +27,12 @@ def import_stream(model, in_stream, **kwargs):
 
 def import_meta(model, in_stream, **kwargs):
     """Build the model a stream."""
+    import_stream(model, in_stream, type="meta")
     pass
 
 def export_meta(model, **kwargs):
     """Build the model a stream."""
+    export_stream(model, type="meta")
     pass
 
 

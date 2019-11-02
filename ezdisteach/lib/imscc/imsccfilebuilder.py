@@ -4,67 +4,48 @@
     Produce an lxml entity ready to convert to text
 """
 
-from abc import abstractmethod, ABC
-
-from lxml import etree
-from lxml.etree import ElementBase
-
-from .xmlelements import IMSBasicText, IMSItem, IMSRessourceFile
 import io
-class ModelFileOutputBuilder:
-    def __init__(self, item, ioopen = io.open):
-        self.model = item
-        self.openfile = ioopen
-
-    def output_file(self, basepath) -> None:
-        pass
 
 
-class CourseFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        for item in self.model:
-            get_file_output_builder(item, self.openfile)
+def course_output_file(model, ioopen=io.open) -> None:
+    for item in model:
+        file_output(item, ioopen)
 
 
-class SectionFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        for item in self.model:
-            get_file_output_builder(item, self.openfile)
-
-class LabelFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        pass
-
-class AssessmentFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-
-        pass
-
-class DiscussionFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        # Output the discussion.xml file
-        pass
+def section_output_file(model, ioopen=io.open) -> None:
+    for item in model:
+        file_output(item, ioopen)
 
 
-class BinaryFileFileOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        with self.openfile(self.model.name, 'w') as f:
-            f.write(self.model.export())
+def label_output_file(model, ioopen=io.open) -> None:
+    pass
 
 
-class ImageOutputBuilder(ModelFileOutputBuilder):
-    def output_file(self, basepath) -> None:
-        with self.openfile(self.model.name, 'w') as f:
-            f.write(self.model.export())
+def assessment_output_file(model, ioopen=io.open) -> None:
+    pass
 
 
+def discussion_output_file(model, ioopen=io.open) -> None:
+    # Output the discussion.xml file
+    pass
 
 
-def get_file_output_builder(model, ioopen = io.open):
+def binaryfile_output_file(model, ioopen=io.open) -> None:
+    with ioopen(model.name, 'w') as f:
+        f.write(model.export())
+
+
+def image_output_file(model, ioopen=io.open) -> None:
+    with ioopen(model.name, 'w') as f:
+        f.write(model.export())
+
+
+def file_output(model, ioopen=io.open):
     modelclassname = model.__class__.__name__
-    builderclassname = '%sFileOutputBuilder' % modelclassname
-    builderclass = globals().get(builderclassname, None)
-    if builderclass:
-        return builderclass(model, ioopen)
+    builderfunctname = '%s_output_file' % modelclassname.lower()
+    builderfunct = globals().get(builderfunctname, None)
+    if builderfunct:
+        return builderfunct(model, ioopen)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(
+            'cannot find file output builder function {} for {}'.format(builderfunctname, modelclassname))

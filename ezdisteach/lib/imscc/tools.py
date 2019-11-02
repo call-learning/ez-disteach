@@ -23,3 +23,7 @@ def get_ressource_path(model):
         return targetfname(model)
     else:
         raise NotImplementedError()
+
+
+def get_model_identifier(model):
+    return ('I_%s' % model.uid).upper()

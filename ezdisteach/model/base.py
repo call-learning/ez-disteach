@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
 """
     The base module: defines a base model so we can then use declarative
     syntax for all submodels (a bit like in Django ORM)
 """
 import importlib
-import random
-import string
+from ezdisteach.lib.tools import generate_uid
 from collections.abc import MutableSequence
 
 from ..formats import available as available_formats
@@ -53,8 +53,8 @@ class Base(MutableSequence):
         Import an entity from a given format from an input stream
         :param in_stream:
         :param format:
-        :param kwargs:
-        :return:
+        :param kwargs: type of import: import all (including files in a zip file for example) or just the metadata
+        :return: self
         """
         module = importlib.import_module('ezdisteach.formats')
         if not format:
@@ -72,8 +72,8 @@ class Base(MutableSequence):
         Export the entity to a given format. This will generate a stream which can then be processed
         :param format:
         :param globalcontext: a mutable object shared amongst all entities exported (subentities also)
-        :param kwargs: additional args
-        :return: a context that can then
+        :param kwargs: additional args such as "type" which will state what type of export we do (imsmetadata, qti, files...)
+        :return: a single stream or a dictionary with filepath <=> output stream.
         """
         module = importlib.import_module(self.__module__)
         export_item, _ = self._formats.get(format, (None, None))
@@ -113,7 +113,7 @@ class Base(MutableSequence):
     @property
     def meta(self):
         """
-        :return: a class ??
+        :return: a dictionary ??
         """
         # We must not raise AttributeError in this method:
         # https://medium.com/@ceshine/python-debugging-pitfall-mixed-use-of-property-and-getattr-f89e0ede13f1
@@ -134,7 +134,7 @@ class Base(MutableSequence):
     @property
     def uid(self):
         if self._uid is None:
-            self._uid = _generate_uid()
+            self._uid = generate_uid()
         return self._uid
 
     @classmethod
@@ -246,6 +246,3 @@ class ImportationError(ModelException):
             self.message += ' :' + specificmessage
 
 
-def _generate_uid():
-    allletters = string.ascii_lowercase
-    return ''.join(random.choice(allletters) for i in range(10))
