@@ -36,18 +36,69 @@ def _add_flow_mat_text(parentelement, textcontent, texttype='text/html'):
     _add_mat_text(material, textcontent, texttype)
 
 
-def _add_generalfbrespcondition(parentelement, response_lid_id, questionmodel):
-    _add_respcondition(parentelement, response_lid_id, questionmodel, generalfb, feedbacks)
-
-
-    'General feedback', iscontinue=True)
-
-def _add_respconditions(parentelement, response_lid_id, questionmodel, generalfb, feedbacks):
-    if
+def _add_respcondition(parentelement, response_lid_id, questionmodel, title,
+                       iscontinue=False,
+                       score=None,
+                       feedbackid=None):
     respcondition = ET.SubElement(parentelement, 'respcondition',
-                  {'title': title, 'continue': 'Yes' if iscontinue else 'False'})
+                                  {'title': title, 'continue': 'Yes' if iscontinue else 'No'})
     conditionvar = _get_condition_var(None, response_lid_id, questionmodel)
     respcondition.append(conditionvar)
+
+    if score:
+        scoreelt = ET.SubElement(respcondition, 'setvar', {'varname': 'SCORE', 'action': 'set'})
+        scoreelt.set_text(score)
+
+    # Add display feedback
+    if feedbackid:
+        ET.SubElement(respcondition, 'displayfeedback', {'feedbacktype': 'Response', 'linkrefid': feedbackid})
+
+
+GENERIC_RESPONSES = ['general', 'correct', 'incorrect']
+
+
+def _add_respconditions(respprocessingel, response_lid_id, questionmodel, feedbacks):
+    minscore = questionmodel.meta.get('minscore', 0)
+    maxscore = questionmodel.meta.get('maxscore', 100)
+
+    # Add generic response conditions
+    for responsetype in GENERIC_RESPONSES:
+        title = None
+        iscontinue = False
+        feedbackid = _get_fb_uid(responsetype, questionmodel)
+        score = None
+        if responsetype == 'general':
+            iscontinue = True
+        if responsetype == 'correct':
+            score = maxscore
+        if responsetype == 'incorrect':
+            score = minscore
+        _add_respcondition(respprocessingel, response_lid_id, questionmodel, title,
+                           iscontinue=iscontinue,
+                           score=score,
+                           feedbackid=feedbackid)
+    # Add other feedback
+    for fbkey, fbvalue in feedbacks.items():
+        if fbkey in ['general', 'correct', 'incorrect']:
+            continue  # We already have added these ones
+        title = None
+        iscontinue = False
+        feedbackid = _get_fb_uid(fbkey, questionmodel)
+        score = None
+        _add_respcondition(respprocessingel, response_lid_id, questionmodel, title,
+                           iscontinue=iscontinue,
+                           score=score,
+                           feedbackid=feedbackid)
+
+
+def _get_fb_uid(fbkey, questionmodel):
+    uid = ''
+    if fbkey in GENERIC_RESPONSES:
+        uid = fbkey
+    else:
+        uid = questionmodel.get_choice_uid(fbkey).upper()
+    return 'I%s_fb' % uid
+
 
 def _get_condition_var(rigthanswers, response_lid_id, questionmodel):
     conditionvar = ET.Element('conditionvar')
@@ -61,6 +112,7 @@ def _get_condition_var(rigthanswers, response_lid_id, questionmodel):
             varequal = ET.SubElement(parentelement, 'varequal', {'respident': response_lid_id})
             varequal.set_text(('I_%s' % questionmodel.get_choice_uid(ra)).upper())
     return conditionvar
+
 
 def multiplechoice_xmlqti_builder(questionmodel, rootdocument: ET.ElementTree = None,
                                   itemparent: ET.Element = None,
@@ -105,16 +157,13 @@ def multiplechoice_xmlqti_builder(questionmodel, rootdocument: ET.ElementTree = 
 
     generalfb = questionmodel.meta.get('generalfeedback', None)
     feedbacks = questionmodel.meta.get('feedbacks', {})
-    _add_respconditions(resprocessing, responselid_identifier, questionmodel, generalfb, feedbacks)
+    _add_respconditions(resprocessing, responselid_identifier, questionmodel, feedbacks)
     # Feedback
-    if generalfb:
-        gitemfeedback = ET.SubElement(itemparent, 'itemfeedback', {'ident': 'general_fb'})
-        # flow_mat: https://www.imsglobal.org/question/qtiv1p2/imsqti_asi_infov1p2.html#1442411
-        _add_flow_mat_text(gitemfeedback, generalfb)
-
+    allfb = {fbkey: fbkey.capitalize() for fbkey in GENERIC_RESPONSES}
+    allfb.update(feedbacks)  # Make sure we got default values
     for fbkey, fbvalue in feedbacks.items():
         itemfeedback = ET.SubElement(itemparent, 'itemfeedback')
-        itemfeedback.set('ident', ('I%s_fb' % questionmodel.get_choice_uid(fbkey)).upper())
+        itemfeedback.set('ident', _get_fb_uid(fbkey, questionmodel))
         _add_flow_mat_text(itemfeedback, fbvalue)
 
 
