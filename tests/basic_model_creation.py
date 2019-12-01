@@ -1,7 +1,7 @@
 import unittest
 
 from ezdisteach.model import create_model
-from ezdisteach.model.file import BinaryFile
+from ezdisteach.model.file.binaryfile import BinaryFile
 from io import IOBase
 
 

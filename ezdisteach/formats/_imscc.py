@@ -11,7 +11,7 @@ from yattag import indent
 from ezdisteach.lib.imscc.imsccfilebuilder import file_output
 from ezdisteach.lib.imscc.imsccmanifestbuilder import get_xml_manifest
 from ezdisteach.lib.imscc.imsccqtibuilder import course_xmlqti_builder
-from ezdisteach.model.structural import Course
+from ezdisteach.model.structural.course import Course
 
 title = 'imscc'
 extensions = ('imscc',)

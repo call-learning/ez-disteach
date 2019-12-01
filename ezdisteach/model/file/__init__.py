@@ -1,1 +1,1 @@
-from .binaryfile import BinaryFile
+# -*- coding: utf-8 -*-

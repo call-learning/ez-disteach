@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from io import StringIO
 
 from ezdisteach.lib.tools import generate_uid
-from ezdisteach.model.assessment import Assessment
+from ezdisteach.model.assessment.assessment import Assessment
 from .tools import get_ressource_path
 
 IMS_QTI_VERSION_1P2 = "1.2"

@@ -7,7 +7,6 @@ import importlib
 from ezdisteach.lib.tools import generate_uid
 from collections.abc import MutableSequence
 
-from ..formats import available as available_formats
 
 
 class Base(MutableSequence):
@@ -140,6 +139,7 @@ class Base(MutableSequence):
     @classmethod
     def __register_formats(cls):
         """Adds format properties."""
+        from ..formats import available as available_formats
         for fmt in available_formats:
             try:
                 try:
